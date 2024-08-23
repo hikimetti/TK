@@ -1,1 +1,226 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interaktive Kategorisierungsübung</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            opacity: 1;
+        }
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            opacity: 1;
+        }
+        .categories {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+        }
+        .category {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            margin: 0 10px;
+            min-height: 150px;
+            transition: border-color 0.3s, background-color 0.3s;
+            text-align: center;
+            background-color: #fafafa;
+        }
+        .category:hover {
+            border-color: #007aff;
+            background-color: #f0f8ff;
+        }
+        .statement {
+            background: #ffffff;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: move;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .statement.correct {
+            background-color: #d1e7dd;
+            box-shadow: 0 4px 6px rgba(72, 187, 120, 0.5);
+        }
+        .statement.incorrect {
+            background-color: #f8d7da;
+            box-shadow: 0 4px 6px rgba(220, 53, 69, 0.5);
+        }
+        #score {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            color: #555;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #d93a8b;
+            border: none;
+            border-radius: 10px;
+            cursor: not-allowed;
+            opacity: 0.5;
+            transition: opacity 0.3s, cursor 0.3s;
+        }
+        .button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        .button:not(:disabled) {
+            cursor: pointer;
+            opacity: 1;
+        }
+        a.button {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kategorisierungsübung</h1>
+        <p>Ordne die folgenden Aussagen den richtigen Kategorien zu. Ziehe sie in die entsprechenden Felder.</p>
+        <div class="categories">
+            <div class="category" id="category1" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h3>24 Monate Laufzeit</h3>
+            </div>
+            <div class="category" id="category2" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h3>12 Monate Laufzeit</h3>
+            </div>
+            <div class="category" id="category3" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <h3>1 Monat Laufzeit</h3>
+            </div>
+        </div>
+        <div id="statements"></div>
+        <div id="score">Punktzahl: <span id="points">0</span> / 9</div>
+        <div class="button-container">
+            <button id="backButton" class="button" disabled>Zurück</button>
+            <a href="https://sites.google.com/view/telekom-quiz/video" id="nextButton" class="button" style="text-decoration: none; display: inline-block;" disabled>Weiter</a>
+        </div>
+    </div>
 
+    <script>
+        const statements = [
+            { text: "MagentaZuhause XL mit MagentaTV Smart", correctCategory: "category1" },
+            { text: "MEGA SPORT", correctCategory: "category2" },
+            { text: "CountryFlat 1.5", correctCategory: "category3" },
+            { text: "WLAN Comfort", correctCategory: "category2" },
+            { text: "GIGA 1000", correctCategory: "category1" },
+            { text: "TV-Paket Family", correctCategory: "category3" },
+            { text: "MagentaMobil Basic", correctCategory: "category1" },
+            { text: "MagentaSport", correctCategory: "category3" },
+            { text: "Speedport Smart", correctCategory: "category2" },
+        ];
+
+        let score = 0;
+
+        function createStatements() {
+            const statementsContainer = document.getElementById("statements");
+            statements.forEach((statement, index) => {
+                const div = document.createElement("div");
+                div.className = "statement";
+                div.draggable = true;
+                div.id = `statement${index}`;
+                div.ondragstart = drag;
+                
+                const span = document.createElement("span");
+                span.textContent = statement.text;
+                div.appendChild(span);
+                
+                statementsContainer.appendChild(div);
+            });
+        }
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.id);
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            const data = ev.dataTransfer.getData("text");
+            const draggedElement = document.getElementById(data);
+            
+            let targetElement = ev.target;
+
+            while (!targetElement.classList.contains("category")) {
+                targetElement = targetElement.parentNode;
+            }
+
+            targetElement.appendChild(draggedElement);
+            checkAnswer(parseInt(data.replace("statement", "")), targetElement.id);
+        }
+
+        function checkAnswer(statementIndex, categoryId) {
+            const statement = statements[statementIndex];
+            const statementElement = document.getElementById(`statement${statementIndex}`);
+
+            if (statement.correctCategory === categoryId) {
+                statementElement.classList.add("correct");
+                statementElement.classList.remove("incorrect");
+                if (!statementElement.classList.contains("counted")) {
+                    score++;
+                    statementElement.classList.add("counted");
+                    updateScore();
+                }
+            } else {
+                statementElement.classList.add("incorrect");
+                statementElement.classList.remove("correct");
+                if (statementElement.classList.contains("counted")) {
+                    score--;
+                    statementElement.classList.remove("counted");
+                    updateScore();
+                }
+            }
+        }
+
+        function updateScore() {
+            document.getElementById("points").textContent = score;
+            
+            if (score === 9) {
+                alert("Gratulation! Du hast alle Aussagen richtig zugeordnet!");
+                document.getElementById("nextButton").disabled = false;
+            } else {
+                document.getElementById("nextButton").disabled = true;
+            }
+        }
+
+        createStatements();
+    </script>
+</body>
+</html>

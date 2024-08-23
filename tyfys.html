@@ -29,6 +29,34 @@
       font-weight: 600;
       color: #de4c8a;
       margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    /* Schrift unter dem Video */
+    .feedback-text {
+      font-size: 3rem;
+      font-weight: 600;
+      color: #de4c8a;
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    /* Feedback-Button-Styles */
+    .feedback-button {
+      margin-top: 1rem;
+      padding: 1rem 2rem;
+      font-size: 1.5rem;
+      color: #ffffff;
+      background-color: #de4c8a;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .feedback-button:hover {
+      background-color: #c43d79;
     }
 
     /* Video-Container-Styles */
@@ -43,7 +71,7 @@
 
     .video-container iframe {
       width: 100%;
-      height: 500px; /* Feste Höhe, um sicherzustellen, dass das Video sichtbar ist */
+      height: 500px;
       display: block;
       border: none;
     }
@@ -54,13 +82,18 @@
         padding: 1rem;
       }
 
-      h1 {
+      h1, .feedback-text {
         font-size: 2rem;
         margin-bottom: 1.5rem;
       }
 
       .video-container iframe {
-        height: 300px; /* Kleinere Höhe für mobile Geräte */
+        height: 300px;
+      }
+
+      .feedback-button {
+        font-size: 1.2rem;
+        padding: 0.8rem 1.5rem;
       }
     }
   </style>
@@ -72,6 +105,8 @@
       <!-- YouTube Video Embed mit Autoplay und Mute -->
       <iframe src="https://www.youtube.com/embed/HYk6ll8CEeM?autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
+    <div class="feedback-text">Hier geht's zum Feedback</div>
+    <a href="https://your-feedback-url.com" class="feedback-button">Feedback geben</a>
   </div>
 </body>
 </html>

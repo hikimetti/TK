@@ -143,13 +143,13 @@
         <h1>Kategorisierungsübung</h1>
         <p>Ordne die folgenden Aussagen den richtigen Kategorien zu. Ziehe sie in die entsprechenden Felder.</p>
         <div class="categories">
-            <div class="category" id="category1" ondrop="drop(event)" ondragover="allowDrop(event)" ontouchend="touchDrop(event)">
+            <div class="category" id="category1" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <h3>24 Monate Laufzeit</h3>
             </div>
-            <div class="category" id="category2" ondrop="drop(event)" ondragover="allowDrop(event)" ontouchend="touchDrop(event)">
+            <div class="category" id="category2" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <h3>12 Monate Laufzeit</h3>
             </div>
-            <div class="category" id="category3" ondrop="drop(event)" ondragover="allowDrop(event)" ontouchend="touchDrop(event)">
+            <div class="category" id="category3" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <h3>1 Monat Laufzeit</h3>
             </div>
         </div>
@@ -194,23 +194,9 @@
                 div.ondragstart = drag;
                 
                 // Mobile Touch Support
-                div.addEventListener('touchstart', function(event) {
-                    draggedElement = event.target;
-                    event.target.style.opacity = '0.4';
-                });
-
-                div.addEventListener('touchend', function(event) {
-                    event.target.style.opacity = '1';
-                    draggedElement = null;
-                });
-
-                div.addEventListener('touchmove', function(event) {
-                    event.preventDefault();
-                    const touch = event.targetTouches[0];
-                    draggedElement.style.position = 'absolute';
-                    draggedElement.style.left = `${touch.pageX - 50}px`;
-                    draggedElement.style.top = `${touch.pageY - 25}px`;
-                });
+                div.addEventListener('touchstart', touchStart);
+                div.addEventListener('touchend', touchEnd);
+                div.addEventListener('touchmove', touchMove);
                 
                 const span = document.createElement("span");
                 span.textContent = statement.text;
@@ -225,7 +211,6 @@
         }
 
         function drag(ev) {
-            draggedElement = ev.target;
             ev.dataTransfer.setData("text", ev.target.id);
         }
 
@@ -244,16 +229,30 @@
             checkAnswer(parseInt(draggedElement.id.replace("statement", "")), targetElement.id);
         }
 
-        function touchDrop(ev) {
-            ev.preventDefault();
-            
-            let targetElement = ev.target;
+        function touchStart(ev) {
+            draggedElement = ev.target;
+            ev.target.style.opacity = '0.4';
+        }
 
-            while (!targetElement.classList.contains('category')) {
+        function touchMove(ev) {
+            ev.preventDefault();
+            const touch = ev.targetTouches[0];
+            draggedElement.style.position = 'absolute';
+            draggedElement.style.left = touch.pageX - (draggedElement.offsetWidth / 2) + 'px';
+            draggedElement.style.top = touch.pageY - (draggedElement.offsetHeight / 2) + 'px';
+        }
+
+        function touchEnd(ev) {
+            ev.preventDefault();
+            draggedElement.style.opacity = '1';
+
+            let targetElement = document.elementFromPoint(ev.changedTouches[0].clientX, ev.changedTouches[0].clientY);
+
+            while (targetElement && !targetElement.classList.contains('category')) {
                 targetElement = targetElement.parentElement;
             }
             
-            if (draggedElement) {
+            if (targetElement && draggedElement) {
                 targetElement.appendChild(draggedElement);
                 draggedElement.style.position = 'initial';
                 draggedElement.style.left = 'initial';

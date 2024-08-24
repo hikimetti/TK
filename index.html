@@ -64,6 +64,7 @@
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s, box-shadow 0.3s;
+            position: relative; /* Neu hinzugefügt */
         }
         .statement.correct {
             background-color: #d1e7dd;
@@ -230,7 +231,7 @@
         }
 
         function touchStart(ev) {
-            draggedElement = ev.target;
+            draggedElement = ev.target.closest('.statement'); // Ensure the whole statement box is dragged
             ev.target.style.opacity = '0.4';
         }
 

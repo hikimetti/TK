@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Interaktive Kategorisierungsübung</title>
     <style>
         body {
@@ -13,7 +13,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
+            -webkit-overflow-scrolling: touch;
         }
         .container {
             width: 90%;
@@ -38,16 +39,17 @@
         }
         .categories {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-around;
             margin-bottom: 30px;
         }
         .category {
-            flex: 1;
+            flex: 1 1 100%;
             padding: 15px;
             border: 2px solid #ddd;
             border-radius: 15px;
-            margin: 0 10px;
-            min-height: 150px;
+            margin: 10px 0;
+            min-height: 100px;
             transition: border-color 0.3s, background-color 0.3s;
             text-align: center;
             background-color: #fafafa;
@@ -63,8 +65,8 @@
             cursor: move;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s, box-shadow 0.3s;
-            position: relative; /* Neu hinzugefügt */
+            transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s, opacity 0.3s;
+            position: relative;
         }
         .statement.correct {
             background-color: #d1e7dd;
@@ -137,6 +139,19 @@
             border-radius: 10px;
             cursor: pointer;
         }
+        @media (min-width: 768px) {
+            .category {
+                flex: 1 1 30%;
+                margin: 0 10px;
+                min-height: 150px;
+            }
+        }
+        @media (max-width: 768px) {
+            .statement {
+                padding: 20px;
+                margin: 15px 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -194,10 +209,9 @@
                 div.id = `statement${index}`;
                 div.ondragstart = drag;
                 
-                // Mobile Touch Support
-                div.addEventListener('touchstart', touchStart);
-                div.addEventListener('touchend', touchEnd);
-                div.addEventListener('touchmove', touchMove);
+                div.addEventListener('touchstart', touchStart, {passive: true});
+                div.addEventListener('touchend', touchEnd, {passive: true});
+                div.addEventListener('touchmove', touchMove, {passive: false});
                 
                 const span = document.createElement("span");
                 span.textContent = statement.text;
@@ -231,8 +245,9 @@
         }
 
         function touchStart(ev) {
-            draggedElement = ev.target.closest('.statement'); // Ensure the whole statement box is dragged
+            draggedElement = ev.target.closest('.statement');
             ev.target.style.opacity = '0.4';
+            ev.target.style.transform = 'scale(1.05)';
         }
 
         function touchMove(ev) {
@@ -246,6 +261,7 @@
         function touchEnd(ev) {
             ev.preventDefault();
             draggedElement.style.opacity = '1';
+            draggedElement.style.transform = 'scale(1)';
 
             let targetElement = document.elementFromPoint(ev.changedTouches[0].clientX, ev.changedTouches[0].clientY);
 

@@ -143,13 +143,13 @@
         <h1>Kategorisierungsübung</h1>
         <p>Ordne die folgenden Aussagen den richtigen Kategorien zu. Ziehe sie in die entsprechenden Felder.</p>
         <div class="categories">
-            <div class="category" id="category1" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="category" id="category1" ondrop="drop(event)" ondragover="allowDrop(event)" ontouchend="touchDrop(event)">
                 <h3>24 Monate Laufzeit</h3>
             </div>
-            <div class="category" id="category2" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="category" id="category2" ondrop="drop(event)" ondragover="allowDrop(event)" ontouchend="touchDrop(event)">
                 <h3>12 Monate Laufzeit</h3>
             </div>
-            <div class="category" id="category3" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <div class="category" id="category3" ondrop="drop(event)" ondragover="allowDrop(event)" ontouchend="touchDrop(event)">
                 <h3>1 Monat Laufzeit</h3>
             </div>
         </div>
@@ -182,6 +182,7 @@
         ];
 
         let score = 0;
+        let draggedElement = null;
 
         function createStatements() {
             const statementsContainer = document.getElementById("statements");
@@ -191,6 +192,25 @@
                 div.draggable = true;
                 div.id = `statement${index}`;
                 div.ondragstart = drag;
+                
+                // Mobile Touch Support
+                div.addEventListener('touchstart', function(event) {
+                    draggedElement = event.target;
+                    event.target.style.opacity = '0.4';
+                });
+
+                div.addEventListener('touchend', function(event) {
+                    event.target.style.opacity = '1';
+                    draggedElement = null;
+                });
+
+                div.addEventListener('touchmove', function(event) {
+                    event.preventDefault();
+                    const touch = event.targetTouches[0];
+                    draggedElement.style.position = 'absolute';
+                    draggedElement.style.left = `${touch.pageX - 50}px`;
+                    draggedElement.style.top = `${touch.pageY - 25}px`;
+                });
                 
                 const span = document.createElement("span");
                 span.textContent = statement.text;
@@ -205,6 +225,7 @@
         }
 
         function drag(ev) {
+            draggedElement = ev.target;
             ev.dataTransfer.setData("text", ev.target.id);
         }
 
@@ -215,57 +236,51 @@
             
             let targetElement = ev.target;
 
-            // Prüfen, ob auf eine andere Aussage gedroppt wird
-            while (!targetElement.classList.contains("category")) {
-                targetElement = targetElement.parentNode;
+            while (!targetElement.classList.contains('category')) {
+                targetElement = targetElement.parentElement;
             }
-
+            
             targetElement.appendChild(draggedElement);
-            checkAnswer(parseInt(data.replace("statement", "")), targetElement.id);
+            checkAnswer(parseInt(draggedElement.id.replace("statement", "")), targetElement.id);
+        }
+
+        function touchDrop(ev) {
+            ev.preventDefault();
+            
+            let targetElement = ev.target;
+
+            while (!targetElement.classList.contains('category')) {
+                targetElement = targetElement.parentElement;
+            }
+            
+            if (draggedElement) {
+                targetElement.appendChild(draggedElement);
+                draggedElement.style.position = 'initial';
+                draggedElement.style.left = 'initial';
+                draggedElement.style.top = 'initial';
+                checkAnswer(parseInt(draggedElement.id.replace("statement", "")), targetElement.id);
+            }
         }
 
         function checkAnswer(statementIndex, categoryId) {
             const statement = statements[statementIndex];
-            const statementElement = document.getElementById(`statement${statementIndex}`);
-
+            const element = document.getElementById(`statement${statementIndex}`);
             if (statement.correctCategory === categoryId) {
-                statementElement.classList.add("correct");
-                statementElement.classList.remove("incorrect");
-                if (!statementElement.classList.contains("counted")) {
-                    score++;
-                    statementElement.classList.add("counted");
-                    updateScore();
-                }
+                element.classList.add("correct");
+                score++;
             } else {
-                statementElement.classList.add("incorrect");
-                statementElement.classList.remove("correct");
-                if (statementElement.classList.contains("counted")) {
-                    score--;
-                    statementElement.classList.remove("counted");
-                    updateScore();
-                }
+                element.classList.add("incorrect");
+                score--;
             }
-        }
-
-        function updateScore() {
-            document.getElementById("points").textContent = score;
-            
-            if (score === 9) {
-                showModal();
+            document.getElementById("points").textContent = `${score} / ${statements.length}`;
+            if (score === statements.length) {
                 document.getElementById("nextButton").disabled = false;
-            } else {
-                document.getElementById("nextButton").disabled = true;
+                document.getElementById("myModal").style.display = "flex";
             }
-        }
-
-        function showModal() {
-            const modal = document.getElementById("myModal");
-            modal.style.display = "flex";
         }
 
         function closeModal() {
-            const modal = document.getElementById("myModal");
-            modal.style.display = "none";
+            document.getElementById("myModal").style.display = "none";
         }
 
         createStatements();

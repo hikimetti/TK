@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interaktive Kategorisierungsübung</title>
     <style>
         body {
@@ -13,8 +13,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            -webkit-overflow-scrolling: touch;
+            height: 100vh;
         }
         .container {
             width: 90%;
@@ -39,17 +38,16 @@
         }
         .categories {
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-around;
             margin-bottom: 30px;
         }
         .category {
-            flex: 1 1 100%;
+            flex: 1;
             padding: 15px;
             border: 2px solid #ddd;
             border-radius: 15px;
-            margin: 10px 0;
-            min-height: 100px;
+            margin: 0 10px;
+            min-height: 150px;
             transition: border-color 0.3s, background-color 0.3s;
             text-align: center;
             background-color: #fafafa;
@@ -65,8 +63,7 @@
             cursor: move;
             border-radius: 12px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s, opacity 0.3s;
-            position: relative;
+            transition: background-color 0.3s, box-shadow 0.3s;
         }
         .statement.correct {
             background-color: #d1e7dd;
@@ -139,19 +136,6 @@
             border-radius: 10px;
             cursor: pointer;
         }
-        @media (min-width: 768px) {
-            .category {
-                flex: 1 1 30%;
-                margin: 0 10px;
-                min-height: 150px;
-            }
-        }
-        @media (max-width: 768px) {
-            .statement {
-                padding: 20px;
-                margin: 15px 0;
-            }
-        }
     </style>
 </head>
 <body>
@@ -198,7 +182,6 @@
         ];
 
         let score = 0;
-        let draggedElement = null;
 
         function createStatements() {
             const statementsContainer = document.getElementById("statements");
@@ -208,10 +191,6 @@
                 div.draggable = true;
                 div.id = `statement${index}`;
                 div.ondragstart = drag;
-                
-                div.addEventListener('touchstart', touchStart, {passive: true});
-                div.addEventListener('touchend', touchEnd, {passive: true});
-                div.addEventListener('touchmove', touchMove, {passive: false});
                 
                 const span = document.createElement("span");
                 span.textContent = statement.text;
@@ -236,67 +215,57 @@
             
             let targetElement = ev.target;
 
-            while (!targetElement.classList.contains('category')) {
-                targetElement = targetElement.parentElement;
+            // Prüfen, ob auf eine andere Aussage gedroppt wird
+            while (!targetElement.classList.contains("category")) {
+                targetElement = targetElement.parentNode;
             }
-            
+
             targetElement.appendChild(draggedElement);
-            checkAnswer(parseInt(draggedElement.id.replace("statement", "")), targetElement.id);
-        }
-
-        function touchStart(ev) {
-            draggedElement = ev.target.closest('.statement');
-            ev.target.style.opacity = '0.4';
-            ev.target.style.transform = 'scale(1.05)';
-        }
-
-        function touchMove(ev) {
-            ev.preventDefault();
-            const touch = ev.targetTouches[0];
-            draggedElement.style.position = 'absolute';
-            draggedElement.style.left = touch.pageX - (draggedElement.offsetWidth / 2) + 'px';
-            draggedElement.style.top = touch.pageY - (draggedElement.offsetHeight / 2) + 'px';
-        }
-
-        function touchEnd(ev) {
-            ev.preventDefault();
-            draggedElement.style.opacity = '1';
-            draggedElement.style.transform = 'scale(1)';
-
-            let targetElement = document.elementFromPoint(ev.changedTouches[0].clientX, ev.changedTouches[0].clientY);
-
-            while (targetElement && !targetElement.classList.contains('category')) {
-                targetElement = targetElement.parentElement;
-            }
-            
-            if (targetElement && draggedElement) {
-                targetElement.appendChild(draggedElement);
-                draggedElement.style.position = 'initial';
-                draggedElement.style.left = 'initial';
-                draggedElement.style.top = 'initial';
-                checkAnswer(parseInt(draggedElement.id.replace("statement", "")), targetElement.id);
-            }
+            checkAnswer(parseInt(data.replace("statement", "")), targetElement.id);
         }
 
         function checkAnswer(statementIndex, categoryId) {
             const statement = statements[statementIndex];
-            const element = document.getElementById(`statement${statementIndex}`);
+            const statementElement = document.getElementById(`statement${statementIndex}`);
+
             if (statement.correctCategory === categoryId) {
-                element.classList.add("correct");
-                score++;
+                statementElement.classList.add("correct");
+                statementElement.classList.remove("incorrect");
+                if (!statementElement.classList.contains("counted")) {
+                    score++;
+                    statementElement.classList.add("counted");
+                    updateScore();
+                }
             } else {
-                element.classList.add("incorrect");
-                score--;
-            }
-            document.getElementById("points").textContent = `${score} / ${statements.length}`;
-            if (score === statements.length) {
-                document.getElementById("nextButton").disabled = false;
-                document.getElementById("myModal").style.display = "flex";
+                statementElement.classList.add("incorrect");
+                statementElement.classList.remove("correct");
+                if (statementElement.classList.contains("counted")) {
+                    score--;
+                    statementElement.classList.remove("counted");
+                    updateScore();
+                }
             }
         }
 
+        function updateScore() {
+            document.getElementById("points").textContent = score;
+            
+            if (score === 9) {
+                showModal();
+                document.getElementById("nextButton").disabled = false;
+            } else {
+                document.getElementById("nextButton").disabled = true;
+            }
+        }
+
+        function showModal() {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "flex";
+        }
+
         function closeModal() {
-            document.getElementById("myModal").style.display = "none";
+            const modal = document.getElementById("myModal");
+            modal.style.display = "none";
         }
 
         createStatements();

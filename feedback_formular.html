@@ -129,7 +129,7 @@
         }
 
         document.getElementById('feedbackForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Verhindert die Standardaktion
+            event.preventDefault(); // Verhindert das Standard-Formularverhalten
 
             const feedback = {
                 rating: document.getElementById('rating').value,
@@ -137,10 +137,9 @@
                 suggestions: document.getElementsByName('suggestions')[0].value
             };
 
-            // Speichern der Daten in der Konsole oder in einer JSON-Datei
+            // Feedback in der Konsole anzeigen, damit es manuell gespeichert werden kann
             console.log(feedback);
 
-            // Hier kann die Logik zum Speichern der Daten hinzugefügt werden, z.B. in eine JSON-Datei oder eine API
             alert('Feedback gesendet! Danke für dein Feedback.');
 
             // Nach dem Senden der Daten das Formular zurücksetzen

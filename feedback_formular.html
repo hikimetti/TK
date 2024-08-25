@@ -85,12 +85,12 @@
 <body>
     <div class="container">
         <h1>Feedback</h1>
-        <form id="feedbackForm" action="feedback.php" method="POST">
+        <form id="feedbackForm" action="feedback_ergebnis.html" method="GET">
             <div class="feedback-question">
                 <p>1. Wie bewertest du allgemein dieses Training?</p>
                 <div class="feedback-buttons">
-                    <button type="button" class="feedback-button positive" onclick="setRating('positive')">+</button>
-                    <button type="button" class="feedback-button negative" onclick="setRating('negative')">−</button>
+                    <button type="button" class="feedback-button positive" onclick="setRating('Positiv')">+</button>
+                    <button type="button" class="feedback-button negative" onclick="setRating('Negativ')">−</button>
                 </div>
                 <input type="hidden" name="rating" id="rating">
             </div>
@@ -119,7 +119,7 @@
             const positiveButton = document.querySelector('.feedback-button.positive');
             const negativeButton = document.querySelector('.feedback-button.negative');
 
-            if (value === 'positive') {
+            if (value === 'Positiv') {
                 positiveButton.style.opacity = '1';
                 negativeButton.style.opacity = '0.5';
             } else {

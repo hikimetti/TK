@@ -85,7 +85,7 @@
 <body>
     <div class="container">
         <h1>Feedback</h1>
-        <form id="feedbackForm" action="feedback_ergebnis.html" method="GET">
+        <form id="feedbackForm">
             <div class="feedback-question">
                 <p>1. Wie bewertest du allgemein dieses Training?</p>
                 <div class="feedback-buttons">
@@ -129,10 +129,22 @@
         }
 
         document.getElementById('feedbackForm').addEventListener('submit', function(event) {
-            if (!rating) {
-                alert('Bitte wähle eine Bewertung aus.');
-                event.preventDefault();
-            }
+            event.preventDefault(); // Verhindert die Standardaktion
+
+            const feedback = {
+                rating: document.getElementById('rating').value,
+                favoritePart: document.getElementsByName('favoritePart')[0].value,
+                suggestions: document.getElementsByName('suggestions')[0].value
+            };
+
+            // Speichern der Daten in der Konsole oder in einer JSON-Datei
+            console.log(feedback);
+
+            // Hier kann die Logik zum Speichern der Daten hinzugefügt werden, z.B. in eine JSON-Datei oder eine API
+            alert('Feedback gesendet! Danke für dein Feedback.');
+
+            // Nach dem Senden der Daten das Formular zurücksetzen
+            document.getElementById('feedbackForm').reset();
         });
     </script>
 </body>

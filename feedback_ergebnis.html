@@ -49,40 +49,26 @@
     </div>
 
     <script>
-        // Beispielhafte Daten
-        const feedbackData = [
-            {
-                "rating": "Positiv",
-                "favoritePart": "Die praktischen Übungen.",
-                "suggestions": "Mehr Zeit für Fragen."
-            },
-            {
-                "rating": "Negativ",
-                "favoritePart": "Die Theorien waren gut.",
-                "suggestions": "Mehr Interaktion wäre besser."
-            }
-        ];
+        fetch('feedback.json')
+            .then(response => response.json())
+            .then(data => {
+                const feedbackList = document.getElementById('feedbackList');
+                feedbackList.innerHTML = '';
 
-        function displayFeedback(feedbackArray) {
-            const feedbackList = document.getElementById('feedbackList');
-            feedbackList.innerHTML = '';
+                data.forEach(feedback => {
+                    const feedbackItem = document.createElement('div');
+                    feedbackItem.className = 'feedback-item';
 
-            feedbackArray.forEach(feedback => {
-                const feedbackItem = document.createElement('div');
-                feedbackItem.className = 'feedback-item';
+                    feedbackItem.innerHTML = `
+                        <p><strong>Bewertung:</strong> ${feedback.rating}</p>
+                        <p><strong>Besonders gefallen:</strong> ${feedback.favoritePart}</p>
+                        <p><strong>Wünsche für das nächste Mal:</strong> ${feedback.suggestions}</p>
+                    `;
 
-                feedbackItem.innerHTML = `
-                    <p><strong>Bewertung:</strong> ${feedback.rating}</p>
-                    <p><strong>Besonders gefallen:</strong> ${feedback.favoritePart}</p>
-                    <p><strong>Wünsche für das nächste Mal:</strong> ${feedback.suggestions}</p>
-                `;
-
-                feedbackList.appendChild(feedbackItem);
-            });
-        }
-
-        // Feedback-Daten anzeigen
-        displayFeedback(feedbackData);
+                    feedbackList.appendChild(feedbackItem);
+                });
+            })
+            .catch(error => console.error('Fehler beim Laden der Feedbacks:', error));
     </script>
 </body>
 </html>

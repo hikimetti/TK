@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wer wird Millionär? Quiz</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .question-container {
+            margin-bottom: 30px;
+        }
+        .answers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .answer {
+            width: 48%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            background-color: #fafafa;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+            box-sizing: border-box;
+        }
+        .answer:hover {
+            border-color: #007aff;
+            background-color: #f0f8ff;
+        }
+        .answer.correct {
+            background-color: #d1e7dd;
+            border-color: #28a745;
+        }
+        .answer.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007aff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        #score {
+            font-size: 18px;
+            margin-top: 20px;
+            color: #555;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 400px;
+        }
+        .modal .button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Wer wird Millionär? Quiz</h1>
+        <div class="question-container" id="questionContainer">
+            <!-- Fragen und Antworten werden hier eingefügt -->
+        </div>
+        <div id="score">Punktzahl: <span id="points">0</span> / 3</div>
+        <div class="button-container">
+            <button id="nextButton" class="button" disabled onclick="nextQuestion()">Nächste Frage</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <p>Glückwunsch! Du hast das Quiz beendet! Deine Punktzahl: <span id="finalScore"></span> von 3</p>
+            <button class="button" onclick="closeModal()">Ok</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Welches Land hat die meisten Einwohner?",
+                answers: [
+                    { text: "China", correct: true },
+                    { text: "Indien", correct: false },
+                    { text: "USA", correct: false },
+                    { text: "Indonesien", correct: false },
+                ]
+            },
+            {
+                question: "Was ist die Hauptstadt von Australien?",
+                answers: [
+                    { text: "Sydney", correct: false },
+                    { text: "Melbourne", correct: false },
+                    { text: "Canberra", correct: true },
+                    { text: "Brisbane", correct: false },
+                ]
+            },
+            {
+                question: "Wie viele Kontinente gibt es auf der Erde?",
+                answers: [
+                    { text: "5", correct: false },
+                    { text: "6", correct: false },
+                    { text: "7", correct: true },
+                    { text: "8", correct: false },
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const questionContainer = document.getElementById("questionContainer");
+            questionContainer.innerHTML = "";
+
+            const questionTitle = document.createElement("h2");
+            questionTitle.textContent = questions[currentQuestionIndex].question;
+            questionContainer.appendChild(questionTitle);
+
+            const answersContainer = document.createElement("div");
+            answersContainer.className = "answers";
+
+            questions[currentQuestionIndex].answers.forEach((answer, index) => {
+                const answerDiv = document.createElement("div");
+                answerDiv.className = "answer";
+                answerDiv.textContent = answer.text;
+                answerDiv.onclick = () => selectAnswer(answerDiv, answer.correct);
+                answersContainer.appendChild(answerDiv);
+            });
+
+            questionContainer.appendChild(answersContainer);
+        }
+
+        function selectAnswer(answerDiv, isCorrect) {
+            const allAnswers = document.querySelectorAll(".answer");
+            allAnswers.forEach(answer => answer.onclick = null);
+
+            if (isCorrect) {
+                answerDiv.classList.add("correct");
+                score++;
+                updateScore();
+                document.getElementById("nextButton").disabled = false;
+            } else {
+                answerDiv.classList.add("incorrect");
+                allAnswers.forEach(answer => {
+                    if (!answer.classList.contains("correct")) {
+                        answer.onclick = () => selectAnswer(answer, questions[currentQuestionIndex].answers[Array.from(allAnswers).indexOf(answer)].correct);
+                    }
+                });
+            }
+        }
+
+        function updateScore() {
+            document.getElementById("points").textContent = score;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+                document.getElementById("nextButton").disabled = true;
+            } else {
+                showModal();
+                document.getElementById("finalScore").textContent = score;
+            }
+        }
+
+        function showModal() {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "flex";
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>

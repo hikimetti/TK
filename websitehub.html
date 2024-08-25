@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passwortgeschützte Auswahlseite</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .categories {
+            display: none; /* Initially hidden */
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .category {
+            flex: 1 1 30%;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            margin: 15px;
+            min-height: 200px;
+            text-align: center;
+            background-color: #fafafa;
+            cursor: pointer;
+            transition: border-color 0.3s, background-color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .category:hover {
+            border-color: #007aff;
+            background-color: #f0f8ff;
+        }
+        .category h3 {
+            margin: 0;
+            color: #333;
+            font-size: 20px;
+        }
+        #passwordPrompt {
+            display: block;
+        }
+        #passwordInput {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 80%;
+        }
+        #submitButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007aff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        #errorMessage {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="passwordPrompt">
+            <h1>Passwortgeschützt</h1>
+            <p>Bitte geben Sie das Passwort ein, um fortzufahren:</p>
+            <input type="password" id="passwordInput" placeholder="Passwort eingeben" />
+            <br />
+            <button id="submitButton">Bestätigen</button>
+            <p id="errorMessage"></p>
+        </div>
+        
+        <div id="categories" class="categories">
+            <div class="category" onclick="window.location.href='https://example.com/option1'">
+                <h3>Option 1</h3>
+            </div>
+            <div class="category" onclick="window.location.href='https://example.com/option2'">
+                <h3>Option 2</h3>
+            </div>
+            <div class="category" onclick="window.location.href='https://example.com/option3'">
+                <h3>Option 3</h3>
+            </div>
+            <div class="category" onclick="window.location.href='https://example.com/option4'">
+                <h3>Option 4</h3>
+            </div>
+            <div class="category" onclick="window.location.href='https://example.com/option5'">
+                <h3>Option 5</h3>
+            </div>
+            <div class="category" onclick="window.location.href='https://example.com/option6'">
+                <h3>Option 6</h3>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const correctPassword = "Passwort"; // Setze hier dein Passwort
+        const submitButton = document.getElementById("submitButton");
+        const passwordInput = document.getElementById("passwordInput");
+        const errorMessage = document.getElementById("errorMessage");
+        const passwordPrompt = document.getElementById("passwordPrompt");
+        const categories = document.getElementById("categories");
+
+        submitButton.addEventListener("click", function() {
+            const enteredPassword = passwordInput.value;
+
+            if (enteredPassword === correctPassword) {
+                // Passwort ist korrekt, zeige die Kategorien und verstecke die Passwortabfrage
+                passwordPrompt.style.display = "none";
+                categories.style.display = "flex";
+            } else {
+                // Passwort ist falsch, zeige eine Fehlermeldung
+                errorMessage.textContent = "Falsches Passwort, bitte versuchen Sie es erneut.";
+            }
+        });
+    </script>
+</body>
+</html>

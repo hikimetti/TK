@@ -3,58 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dein Feedback</title>
+    <title>Feedback Ergebnisse</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0;
             padding: 20px;
             background-color: #f0f0f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
         }
         .container {
             width: 90%;
             max-width: 600px;
+            margin: 0 auto;
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             padding: 20px;
             border-radius: 20px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            text-align: center;
         }
         h1 {
             font-size: 24px;
             color: #333;
             margin-bottom: 20px;
+            text-align: center;
+        }
+        .feedback-item {
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        .feedback-item:last-child {
+            border-bottom: none;
         }
         p {
             color: #666;
-            margin-bottom: 10px;
+            margin: 5px 0;
             font-size: 18px;
-            text-align: left;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Vielen Dank für dein Feedback!</h1>
-        <p><strong>Bewertung:</strong> <span id="rating"></span></p>
-        <p><strong>Besonders gefallen:</strong> <span id="favoritePart"></span></p>
-        <p><strong>Wünsche für das nächste Mal:</strong> <span id="suggestions"></span></p>
+        <h1>Feedback Ergebnisse</h1>
+        <div id="feedbackList"></div>
     </div>
 
     <script>
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
+        // Beispielhafte Daten
+        const feedbackData = [
+            {
+                "rating": "Positiv",
+                "favoritePart": "Die praktischen Übungen.",
+                "suggestions": "Mehr Zeit für Fragen."
+            },
+            {
+                "rating": "Negativ",
+                "favoritePart": "Die Theorien waren gut.",
+                "suggestions": "Mehr Interaktion wäre besser."
+            }
+        ];
+
+        function displayFeedback(feedbackArray) {
+            const feedbackList = document.getElementById('feedbackList');
+            feedbackList.innerHTML = '';
+
+            feedbackArray.forEach(feedback => {
+                const feedbackItem = document.createElement('div');
+                feedbackItem.className = 'feedback-item';
+
+                feedbackItem.innerHTML = `
+                    <p><strong>Bewertung:</strong> ${feedback.rating}</p>
+                    <p><strong>Besonders gefallen:</strong> ${feedback.favoritePart}</p>
+                    <p><strong>Wünsche für das nächste Mal:</strong> ${feedback.suggestions}</p>
+                `;
+
+                feedbackList.appendChild(feedbackItem);
+            });
         }
 
-        document.getElementById('rating').textContent = getQueryParam('rating');
-        document.getElementById('favoritePart').textContent = getQueryParam('favoritePart');
-        document.getElementById('suggestions').textContent = getQueryParam('suggestions');
+        // Feedback-Daten anzeigen
+        displayFeedback(feedbackData);
     </script>
 </body>
 </html>

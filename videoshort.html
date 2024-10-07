@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Danke für deine Teilnahme</title>
   <style>
-    /* Styles bleiben unverändert */
+    /* Allgemeine Styles */
     body {
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background-color: #f5f5f5;
     }
 
+    /* Container-Styles */
     .container {
       display: flex;
       flex-direction: column;
@@ -22,6 +23,7 @@
       box-sizing: border-box;
     }
 
+    /* Überschriften-Styles */
     h1 {
       font-size: 3rem;
       font-weight: 600;
@@ -30,6 +32,7 @@
       text-align: center;
     }
 
+    /* Schrift unter dem Video */
     .feedback-text {
       font-size: 2rem;
       font-weight: 600;
@@ -38,6 +41,7 @@
       text-align: center;
     }
 
+    /* Feedback-Button-Styles */
     .feedback-button {
       margin-top: 1rem;
       padding: 1rem 2rem;
@@ -55,9 +59,10 @@
       background-color: #c43d79;
     }
 
+    /* Video-Container-Styles */
     .video-container {
-      width: 315px;
-      height: 560px;
+      width: 100%;
+      max-width: 1200px;
       position: relative;
       overflow: hidden;
       border-radius: 8px;
@@ -66,11 +71,12 @@
 
     .video-container iframe {
       width: 100%;
-      height: 100%;
+      height: 500px;
       display: block;
       border: none;
     }
 
+    /* Responsive Styles */
     @media (max-width: 768px) {
       .container {
         padding: 1rem;
@@ -81,10 +87,8 @@
         margin-bottom: 1.5rem;
       }
 
-      .video-container {
-        width: 100%;
-        height: 80vh;
-        max-height: 560px;
+      .video-container iframe {
+        height: 300px;
       }
 
       .feedback-button {
@@ -98,8 +102,8 @@
   <div class="container">
     <h1>Danke für deine Teilnahme</h1>
     <div class="video-container">
-      <!-- YouTube Short Embed mit Autoplay und Ton -->
-      <iframe src="https://www.youtube.com/shorts/C8BAL3k_7Pk?mute=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      <!-- YouTube Video Embed mit Autoplay und Ton -->
+      <iframe src="https://www.youtube.com/embed/PW_NAWnnRrY?autoplay=1&mute=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
     <div class="feedback-text">Hier geht's zum Feedback</div>
     <a href="https://hikimetti.github.io/TK/feedback.html" class="feedback-button">Feedback geben</a>

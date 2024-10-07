@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danke für deine Teilnahme</title>
+  <style>
+    /* Styles bleiben unverändert */
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 600;
+      color: #de4c8a;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .feedback-text {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #333;
+      margin-top: 2rem;
+      text-align: center;
+    }
+
+    .feedback-button {
+      margin-top: 1rem;
+      padding: 1rem 2rem;
+      font-size: 1.5rem;
+      color: #ffffff;
+      background-color: #de4c8a;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .feedback-button:hover {
+      background-color: #c43d79;
+    }
+
+    .video-container {
+      width: 315px;
+      height: 560px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .video-container iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: none;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      h1, .feedback-text {
+        font-size: 2rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .video-container {
+        width: 100%;
+        height: 80vh;
+        max-height: 560px;
+      }
+
+      .feedback-button {
+        font-size: 1.2rem;
+        padding: 0.8rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Danke für deine Teilnahme</h1>
+    <div class="video-container">
+      <!-- YouTube Short Embed mit Autoplay und Ton -->
+      <iframe src="https://www.youtube.com/shorts/C8BAL3k_7Pk?autoplay=1&mute=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="feedback-text">Hier geht's zum Feedback</div>
+    <a href="https://hikimetti.github.io/TK/feedback.html" class="feedback-button">Feedback geben</a>
+  </div>
+</body>
+</html>

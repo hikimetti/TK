@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wer wird Millionär? Quiz</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .question-container {
+            margin-bottom: 30px;
+        }
+        .answers {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .answer {
+            width: 48%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            background-color: #fafafa;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+            box-sizing: border-box;
+        }
+        .answer:hover {
+            border-color: #007aff;
+            background-color: #f0f8ff;
+        }
+        .answer.correct {
+            background-color: #d1e7dd;
+            border-color: #28a745;
+        }
+        .answer.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007aff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+        #score {
+            font-size: 18px;
+            margin-top: 20px;
+            color: #555;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 400px;
+        }
+        .modal .button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Wer wird Millionär? Quiz</h1>
+        <div class="question-container" id="questionContainer">
+            <!-- Fragen und Antworten werden hier eingefügt -->
+        </div>
+        <div id="score">Punktzahl: <span id="points">0</span> / 10</div>
+        <div class="button-container">
+            <button id="nextButton" class="button" disabled onclick="nextQuestion()">Nächste Frage</button>
+        </div>
+    </div>
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <p>Glückwunsch! Du hast das Quiz beendet! Deine Punktzahl: <span id="finalScore"></span> von 10</p>
+            <button class="button" onclick="closeModal()">Ok</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Was ist mit einer 'guten Überleitung' im Kundengespräch gemeint?",
+                answers: [
+                    { text: "Eine ausführliche Produktpräsentation", correct: false },
+                    { text: "Eine Pause im Gespräch", correct: false },
+                    { text: "Die Brücke vom Anrufgrund des Kunden zum anzubietenden Produkt", correct: true },
+                    { text: "Eine Verabschiedung des Kunden", correct: false },
+                ]
+            },
+            {
+                question: "Welche der folgenden Formulierungen eignet sich NICHT als Überleitung im Kundengespräch?",
+                answers: [
+                    { text: "Ich sehe gerade...", correct: false },
+                    { text: "Mir ist aufgefallen...", correct: false },
+                    { text: "Als Sie vorhin sagten...", correct: false },
+                    { text: "Lassen Sie mich Ihnen ein neues Produkt vorstellen...", correct: true },
+                ]
+            },
+            {
+                question: "Wie viele Stufen hat die 'Treppe zum Kunden'?",
+                answers: [
+                    { text: "2", correct: false },
+                    { text: "3", correct: true },
+                    { text: "4", correct: false },
+                    { text: "5", correct: false },
+                ]
+            },
+            {
+                question: "Was bedeutet die oberste Stufe der 'Treppe zum Kunden'?",
+                answers: [
+                    { text: "Wie heißt es?", correct: false },
+                    { text: "Was kann es?", correct: false },
+                    { text: "Was habe ich davon?", correct: true },
+                    { text: "Wann ist es verfügbar?", correct: false },
+                ]
+            },
+            {
+                question: "Worüber sollte man laut dem Text mit dem Kunden sprechen, um ihn zu begeistern?",
+                answers: [
+                    { text: "Über technische Details", correct: false },
+                    { text: "Über Preise und Tarife", correct: false },
+                    { text: "Über den persönlichen Nutzen", correct: true },
+                    { text: "Über die Unternehmensgeschichte", correct: false },
+                ]
+            },
+            {
+                question: "Was ist laut dem Text NICHT Teil einer guten Gesprächsvorbereitung?",
+                answers: [
+                    { text: "Produktkenntnisse", correct: false },
+                    { text: "Gesprächsleitfaden", correct: false },
+                    { text: "Kundendaten", correct: false },
+                    { text: "Verkaufsdruck", correct: true },
+                ]
+            },
+            {
+                question: "Welche Abkürzung wird für den wichtigsten Aspekt in der Kundenansprache verwendet?",
+                answers: [
+                    { text: "WIE", correct: false },
+                    { text: "WAS", correct: false },
+                    { text: "WHD", correct: true },
+                    { text: "WER", correct: false },
+                ]
+            },
+            {
+                question: "Was sollte man laut dem Text vermeiden, wenn man ein Produkt anbietet?",
+                answers: [
+                    { text: "Nutzen erklären", correct: false },
+                    { text: "Überleitung nutzen", correct: false },
+                    { text: "Bilder im Kopf des Kunden malen", correct: false },
+                    { text: "Plump mit der Tür ins Haus fallen", correct: true },
+                ]
+            },
+            {
+                question: "Welcher Aspekt ist für den Kunden am wichtigsten?",
+                answers: [
+                    { text: "Der Name des Produkts", correct: false },
+                    { text: "Die technischen Spezifikationen", correct: false },
+                    { text: "Der Preis", correct: false },
+                    { text: "Der persönliche Nutzen", correct: true },
+                ]
+            },
+            {
+                question: "Was ist der beste Weg, um den Nutzen eines Produkts zu vermitteln?",
+                answers: [
+                    { text: "Aufzählung von Leistungsmerkmalen", correct: false },
+                    { text: "Vergleich mit Konkurrenzprodukten", correct: false },
+                    { text: "Erzählen einer kleinen Geschichte", correct: true },
+                    { text: "Vorlesen des Produktkatalogs", correct: false },
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const questionContainer = document.getElementById("questionContainer");
+            questionContainer.innerHTML = "";
+
+            const questionTitle = document.createElement("h2");
+            questionTitle.textContent = questions[currentQuestionIndex].question;
+            questionContainer.appendChild(questionTitle);
+
+            const answersContainer = document.createElement("div");
+            answersContainer.className = "answers";
+
+            questions[currentQuestionIndex].answers.forEach((answer, index) => {
+                const answerDiv = document.createElement("div");
+                answerDiv.className = "answer";
+                answerDiv.textContent = answer.text;
+                answerDiv.onclick = () => selectAnswer(answerDiv, answer.correct);
+                answersContainer.appendChild(answerDiv);
+            });
+
+            questionContainer.appendChild(answersContainer);
+        }
+
+        function selectAnswer(answerDiv, isCorrect) {
+            const allAnswers = document.querySelectorAll(".answer");
+            allAnswers.forEach(answer => answer.onclick = null);
+
+            if (isCorrect) {
+                answerDiv.classList.add("correct");
+                score++;
+                updateScore();
+                document.getElementById("nextButton").disabled = false;
+            } else {
+                answerDiv.classList.add("incorrect");
+                allAnswers.forEach(answer => {
+                    if (questions[currentQuestionIndex].answers[Array.from(allAnswers).indexOf(answer)].correct) {
+                        answer.classList.add("correct");
+                    }
+                });
+                document.getElementById("nextButton").disabled = false;
+            }
+        }
+
+        function updateScore() {
+            document.getElementById("points").textContent = score;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+                document.getElementById("nextButton").disabled = true;
+            } else {
+                showModal();
+                document.getElementById("finalScore").textContent = score;
+            }
+        }
+
+        function showModal() {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "flex";
+        }
+
+        function closeModal() {
+            const modal = document.getElementById("myModal");
+            modal.style.display = "none";
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
